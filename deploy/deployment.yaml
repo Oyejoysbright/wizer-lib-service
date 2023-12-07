@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  name: DEPLOYMENT-NAME-deployment
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: DEPLOYMENT-NAME
+      tier: microservices
+  template:
+    metadata:
+      labels:
+        app: DEPLOYMENT-NAME
+        tier: microservices
+    spec:
+      containers:
+        - image: DOCKER-IMAGE
+          imagePullPolicy: Always
+          name: microservice                                                
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+            - containerPort: 9095
+              protocol: TCP
+          resources: {}
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            tcpSocket:
+              port: 9090
+          readinessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            tcpSocket:
+              port: 9090
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
